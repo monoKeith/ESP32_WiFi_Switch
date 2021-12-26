@@ -5,6 +5,7 @@
 // For a connection via I2C using the Arduino Wire include:
 #include <Wire.h>               // Only needed for Arduino 1.6.5 and earlier
 #include "SSD1306Wire.h"        // legacy: #include "SSD1306.h"
+#include "time.h"
 // OR #include "SH1106Wire.h"   // legacy: #include "SH1106.h"
 
 // For a connection via I2C using brzo_i2c (must be installed) include:
@@ -27,9 +28,11 @@ class Monitor{
     public:
         static const int SDA_PIN = 4;
         static const int SCL_PIN = 5;
-        
+        // Must call during initialization to init I2C connection
         void setup();
-        void run();
+        // Update content of monitor based on current state
+        void refresh();
+        void setTime(tm *timeinfo);
 
     protected:
         SSD1306Wire display = SSD1306Wire(0x3c, SDA_PIN, SCL_PIN);
@@ -40,6 +43,9 @@ class Monitor{
         void drawCircleDemo();
         void drawProgressBarDemo();
         void drawImageDemo();
+
+    private:
+        String displayTime = "00:00";
 };
 
 

@@ -31,7 +31,6 @@
 #include <Arduino.h>
 #include "monitor.h"
 
-int demoMode = 0;
 int counter = 1;
 
 void Monitor::setup() {
@@ -113,7 +112,7 @@ void Monitor::drawCircleDemo() {
 }
 
 void Monitor::drawProgressBarDemo() {
-  int progress = (counter / 5) % 100;
+  int progress = counter % 100;
   // draw the progress bar
   display.drawProgressBar(0, 32, 120, 10, progress);
 
@@ -128,19 +127,29 @@ void Monitor::drawImageDemo() {
   // display.drawXbm(34, 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
 }
 
-
-void Monitor::run() {
+void Monitor::refresh() {
   // clear the display
   display.clear();
 
-  drawProgressBarDemo();
-
+  // uptime
   display.setFont(ArialMT_Plain_10);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.drawString(128, 54, String(millis()));
+
+  // local time
+  display.setFont(ArialMT_Plain_24);
+  display.setTextAlignment(TEXT_ALIGN_CENTER);
+  display.drawStringMaxWidth(64, 32-24, 128, displayTime);
+
   // write the buffer to the display
   display.display();
 
-  counter++;
   delay(10);
+}
+
+
+void Monitor::setTime(tm *timeinfo){
+  char buffer[6];
+  snprintf(buffer, sizeof(buffer), "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
+  displayTime = String(buffer);
 }
