@@ -28,7 +28,6 @@
 
 */
 
-#include <Arduino.h>
 #include "monitor.h"
 
 int counter = 1;
@@ -139,23 +138,33 @@ void Monitor::refresh()
     display.clear();
 
     // Connection status
-    if (!state->wirelessConnected)
+    if (!state::wirelessConnected)
     {
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        display.drawString(0, 0, "Wi-Fi CONNECTING ->");
-        display.drawString(0, 12, "SSID: " + String(ssid));
+        display.drawString(0, 0, "Wi-Fi... " + String(ssid));
+    }
+
+    // Message
+    String msg = state::getMessage();
+    if (! msg.isEmpty()){
+        display.setFont(ArialMT_Plain_10);
+        display.setTextAlignment(TEXT_ALIGN_LEFT);
+        display.drawString(20, 0, msg);
     }
 
     // local time
     display.setFont(ArialMT_Plain_24);
     display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
-    display.drawStringMaxWidth(64, 32, 128, state->displayTime);
+    display.drawStringMaxWidth(64, 32, 128, state::displayTime);
 
     // Uptime
     display.setFont(ArialMT_Plain_10);
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.drawString(128, 54, "UP: " + String(millis()));
+
+    // Msg end time
+    display.drawString(128, 44, "MSG_END: " + String(state::messageEndTime));
 
     // write the buffer to the display
     display.display();

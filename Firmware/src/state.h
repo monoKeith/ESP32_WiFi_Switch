@@ -3,15 +3,22 @@
 
 #include <Arduino.h>
 #include "time.h"
+#include "config.h"
 
-class State
-{
-public:
-    String displayTime = "--:--";
-    void setTime(tm *timeinfo);
+namespace state{
+    // Clock related vars
+    extern String displayTime;
+    extern void setTime(tm *timeinfo);
+    extern bool timeSyncRequired;
+    extern bool wirelessConnected ;
 
-    bool timeSyncRequired = true;
-    bool wirelessConnected = false;
-};
+    // Message related vars
+    extern bool showMsg;
+    extern String displayMsg;
+    extern unsigned long messageEndTime;
+    extern void newMessage(String msg);
+    extern String getMessage();
+}
+
 
 #endif

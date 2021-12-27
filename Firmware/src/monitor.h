@@ -2,6 +2,7 @@
 #define DISPLAY_H
 
 // For a connection via I2C using the Arduino Wire include:
+#include <Arduino.h>
 #include <Wire.h>        // Only needed for Arduino 1.6.5 and earlier
 #include "SSD1306Wire.h" // legacy: #include "SSD1306.h"
 #include "time.h"
@@ -27,10 +28,6 @@ class Monitor
 {
 
 public:
-    static const int SDA_PIN = 4;
-    static const int SCL_PIN = 5;
-
-    Monitor(State *s) : state(s){};
 
     // Must call during initialization to init I2C connection
     void setup();
@@ -47,8 +44,6 @@ protected:
     void drawProgressBarDemo();
     void drawImageDemo();
 
-private:
-    State *state;
 };
 
 #endif

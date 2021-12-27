@@ -2,34 +2,42 @@
 #include <WiFi.h>
 #include "time.h"
 #include "monitor.h"
+#include "buttons.h"
 #include "config.h"
 #include "state.h"
 
-// State of everything
-State state;
+
+
+// Buttons controller
+Buttons buttons;
 // OLED display controller
-Monitor monitor(&state);
+Monitor monitor;
 
 // Arduino Initialize
 void setup()
 {
-    // Initialize
+    // Initialize display
     monitor.setup();
     monitor.refresh();
+    
+    // Setup GPIO interrupt
+    buttons.setup();
+
     // Start Wi-Fi
     WiFi.begin(ssid, password);
-    // TODO: Setup GPIO interrupt
 }
 
+// Update state var related to time
 void updateClock()
 {
-    if (state.wirelessConnected && state.timeSyncRequired)
+    // https://randomnerdtutorials.com/esp32-date-time-ntp-client-server-arduino/
+    if (state::wirelessConnected && state::timeSyncRequired)
     {
         // Sync time from server
         configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-        state.timeSyncRequired = false;
+        state::timeSyncRequired = false;
     }
-    if (!state.timeSyncRequired)
+    if (!state::timeSyncRequired)
     {
         // Update time in state
         struct tm timeinfo;
@@ -37,7 +45,7 @@ void updateClock()
         {
             return;
         }
-        state.setTime(&timeinfo);
+        state::setTime(&timeinfo);
     }
 }
 
@@ -45,7 +53,7 @@ void updateClock()
 void loop()
 {
     // Update WiFi status
-    state.wirelessConnected = (WiFi.status() == WL_CONNECTED);
+    state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
     // Update clock
     updateClock();
 

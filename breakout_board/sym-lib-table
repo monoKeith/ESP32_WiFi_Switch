@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name breakout_board-rescue)(type Legacy)(uri ${KIPRJMOD}/breakout_board-rescue.lib)(options "")(descr ""))
+)
