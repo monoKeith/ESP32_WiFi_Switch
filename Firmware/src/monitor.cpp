@@ -139,10 +139,15 @@ namespace monitor
 
     void drawDebugScreen()
     {
-        // clear the display
+        // Clear
         display.clear();
 
-        // local time
+        // Switch state
+        display.setFont(ArialMT_Plain_24);
+        display.setTextAlignment(TEXT_ALIGN_LEFT);
+        display.drawStringMaxWidth(0, 0, 128, (state::switchOn ? "ON" : "OFF"));
+
+        // Local time
         display.setFont(ArialMT_Plain_24);
         display.setTextAlignment(TEXT_ALIGN_RIGHT);
         display.drawStringMaxWidth(128, 0, 128, state::displayTime);
@@ -150,16 +155,14 @@ namespace monitor
         // Connection status
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        String wifiMsg = state::wirelessConnected ? "Wi-Fi CONNECTED" : ("Wi-Fi... " + String(ssid));
-        display.drawString(0, 24, wifiMsg);
+        display.drawString(0, 24, (state::wirelessConnected ? "Wi-Fi CONNECTED" : ("Wi-Fi... " + String(ssid))));
 
         // Message
         String msg = state::getMessage();
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        msg = msg.isEmpty() ? "NO MESSAGE" : msg;
-        display.drawString(0, 34, msg);
-        
+        display.drawString(0, 34, (msg.isEmpty() ? "NO MESSAGE" : msg));
+
         // Msg end time
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -174,14 +177,63 @@ namespace monitor
         display.setTextAlignment(TEXT_ALIGN_RIGHT);
         display.drawString(128, 54, String(millis()));
 
-        
+        // Done
+        display.display();
+    }
+
+    void drawScreen()
+    {
+        // Clear
+        display.clear();
+
+        String msg = state::getMessage();
+
+        if (msg.isEmpty())
+        {
+            // Only display time, no message
+            display.setFont(Roboto_Mono_Medium_35);
+            display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+            display.drawString(64, 32, state::displayTime);
+        }
+        else
+        {
+            // Right corner: small time
+            display.setFont(Roboto_Mono_Medium_15);
+            display.setTextAlignment(TEXT_ALIGN_RIGHT);
+            display.drawString(128, 0, state::displayTime);
+            // Message
+            display.setTextAlignment(TEXT_ALIGN_LEFT);
+            display.drawString(0, 15, msg);
+        }
+
+        // Done
+        display.display();
+    }
+
+    void blackScreen()
+    {
+        // Clear
+        display.clear();
         // Done
         display.display();
     }
 
     void refresh()
     {
-        drawDebugScreen();
+        switch (state::displayMode)
+        {
+        case state::DisplayMode::REGULAR:
+            drawScreen();
+            break;
+
+        case state::DisplayMode::DEBUG:
+            drawDebugScreen();
+            break;
+
+        default:
+            blackScreen();
+            break;
+        }
     }
 
 }

@@ -21,6 +21,14 @@ namespace state{
 
     // Output vars
     extern bool switchOn;
+
+    // Display mode
+    enum DisplayMode {
+        REGULAR,
+        DEBUG,
+        OFF
+    };
+    extern DisplayMode displayMode;
 }
 
 

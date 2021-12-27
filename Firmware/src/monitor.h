@@ -6,6 +6,7 @@
 #include "time.h"
 #include "state.h"
 #include "config.h"
+#include "fonts.h"
 
 namespace monitor
 {
@@ -14,8 +15,9 @@ namespace monitor
     // Update content of monitor based on current state
     extern void refresh();
 
-    // 
+    // Display modes
     extern void drawDebugScreen();
+    extern void drawScreen();
 
     // Connection to I2C display
     extern SSD1306Wire display;

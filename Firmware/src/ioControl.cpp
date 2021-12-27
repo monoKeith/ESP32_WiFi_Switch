@@ -33,12 +33,26 @@ void IoControl::gray()
 
 void IoControl::black()
 {
-    state::newMessage("black");
+    switch (state::displayMode)
+    {
+    case state::DisplayMode::REGULAR:
+        state::displayMode = state::DisplayMode::DEBUG;
+        break;
+
+    case state::DisplayMode::DEBUG:
+        state::displayMode = state::DisplayMode::OFF;
+        break;
+
+    default:
+        state::displayMode = state::DisplayMode::REGULAR;
+        break;
+    }
 }
 
 /* IO output control */
 
-void IoControl::refresh(){
+void IoControl::refresh()
+{
     // switch
     digitalWrite(SWITCH_PIN, state::switchOn ? HIGH : LOW);
 }

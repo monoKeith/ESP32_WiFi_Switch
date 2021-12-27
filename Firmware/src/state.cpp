@@ -2,6 +2,9 @@
 
 namespace state
 {
+    /* Display mode */
+    DisplayMode displayMode = REGULAR;
+
     /* Clock vars */
 
     String displayTime = "--:--";

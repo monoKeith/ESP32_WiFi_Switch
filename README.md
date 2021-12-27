@@ -9,6 +9,9 @@ PCB design located in KiCad in `./breakout_board`
 
 Configuration file in `Firmware/src/config.h`
 
+## Libraries
+
+[esp8266-oled-ssd1306](https://github.com/ThingPulse/esp8266-oled-ssd1306)
 
 ## HomeBridge Plugin
 
