@@ -26,4 +26,7 @@ static const char *ntpServer = "pool.ntp.org";
 static const long gmtOffset_sec = 3600 * (-5);
 static const int daylightOffset_sec = 3600;
 
+/* HTTP server */
+#define HTTP_TIMEOUT_MS 1000
+
 #endif

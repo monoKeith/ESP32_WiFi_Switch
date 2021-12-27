@@ -8,10 +8,13 @@
 
 namespace server
 {
-
     extern void setup();
     extern void update();
+    extern void processRequests();
 
+    extern WiFiServer server;
+    extern WiFiClient client;
+    extern bool serverRunning;
 }
 
 #endif

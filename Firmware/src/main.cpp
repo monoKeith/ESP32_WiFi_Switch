@@ -53,6 +53,7 @@ void loop()
 {
     // Update server status
     server::update();
+    server::processRequests();
 
     // Update clock
     updateClock();
