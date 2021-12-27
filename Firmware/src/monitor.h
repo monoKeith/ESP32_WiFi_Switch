@@ -1,12 +1,12 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-
 // For a connection via I2C using the Arduino Wire include:
-#include <Wire.h>               // Only needed for Arduino 1.6.5 and earlier
-#include "SSD1306Wire.h"        // legacy: #include "SSD1306.h"
+#include <Wire.h>        // Only needed for Arduino 1.6.5 and earlier
+#include "SSD1306Wire.h" // legacy: #include "SSD1306.h"
 #include "time.h"
 #include "state.h"
+#include "config.h"
 // OR #include "SH1106Wire.h"   // legacy: #include "SH1106.h"
 
 // For a connection via I2C using brzo_i2c (must be installed) include:
@@ -19,37 +19,36 @@
 // #include "SSD1306Spi.h"
 // OR #include "SH1106SPi.h"
 
-
 // Optionally include custom images
 // #include "images.h"
 
 // Initialize the OLED display using Arduino Wire:
-class Monitor{
+class Monitor
+{
 
-    public:
-        static const int SDA_PIN = 4;
-        static const int SCL_PIN = 5;
+public:
+    static const int SDA_PIN = 4;
+    static const int SCL_PIN = 5;
 
-        Monitor(State *s): state(s){};
+    Monitor(State *s) : state(s){};
 
-        // Must call during initialization to init I2C connection
-        void setup();
-        // Update content of monitor based on current state
-        void refresh();
+    // Must call during initialization to init I2C connection
+    void setup();
+    // Update content of monitor based on current state
+    void refresh();
 
-    protected:
-        SSD1306Wire display = SSD1306Wire(0x3c, SDA_PIN, SCL_PIN);
-        void drawFontFaceDemo();
-        void drawTextFlowDemo();
-        void drawTextAlignmentDemo();
-        void drawRectDemo();
-        void drawCircleDemo();
-        void drawProgressBarDemo();
-        void drawImageDemo();
+protected:
+    SSD1306Wire display = SSD1306Wire(0x3c, SDA_PIN, SCL_PIN);
+    void drawFontFaceDemo();
+    void drawTextFlowDemo();
+    void drawTextAlignmentDemo();
+    void drawRectDemo();
+    void drawCircleDemo();
+    void drawProgressBarDemo();
+    void drawImageDemo();
 
-    private:
-        State *state;
+private:
+    State *state;
 };
-
 
 #endif

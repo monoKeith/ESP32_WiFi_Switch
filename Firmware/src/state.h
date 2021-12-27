@@ -4,12 +4,14 @@
 #include <Arduino.h>
 #include "time.h"
 
-class State{
-    public:
-        String displayTime = "--:--";
-        void setTime(tm *timeinfo);
-        bool wirelessConnected = false;
-        bool timeSynced = false;
+class State
+{
+public:
+    String displayTime = "--:--";
+    void setTime(tm *timeinfo);
+
+    bool timeSyncRequired = true;
+    bool wirelessConnected = false;
 };
 
 #endif

@@ -1,56 +1,55 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "time.h"
-#include "monitor.h" 
+#include "monitor.h"
 #include "config.h"
 #include "state.h"
-
 
 // State of everything
 State state;
 // OLED display controller
 Monitor monitor(&state);
 
-
 // Arduino Initialize
-void setup(){
-  // Initialize
-  monitor.setup();
-  monitor.refresh();
-  // Start Wi-Fi
-  WiFi.begin(ssid, password);
+void setup()
+{
+    // Initialize
+    monitor.setup();
+    monitor.refresh();
+    // Start Wi-Fi
+    WiFi.begin(ssid, password);
+    // TODO: Setup GPIO interrupt
 }
 
-
-// Sync time from server
-void syncTime(){
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+void updateClock()
+{
+    if (state.wirelessConnected && state.timeSyncRequired)
+    {
+        // Sync time from server
+        configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+        state.timeSyncRequired = false;
+    }
+    if (!state.timeSyncRequired)
+    {
+        // Update time in state
+        struct tm timeinfo;
+        if (!getLocalTime(&timeinfo))
+        {
+            return;
+        }
+        state.setTime(&timeinfo);
+    }
 }
-
-
-// Update time for monitor
-void updateLocalTime(){
-  struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
-    return;
-  }
-  state.setTime(&timeinfo);
-}
-
 
 // Arduino run loop
-void loop() {
-  // Check WiFi status
-  state.wirelessConnected = (WiFi.status() == WL_CONNECTED);
-  // Update time
-  if (state.wirelessConnected && !state.timeSynced){
-    syncTime();
-    state.timeSynced = true;
-  }
-  updateLocalTime();
-  
+void loop()
+{
+    // Update WiFi status
+    state.wirelessConnected = (WiFi.status() == WL_CONNECTED);
+    // Update clock
+    updateClock();
 
-  // Refresh monitor
-  monitor.refresh();
-  delay(10);
+    // Refresh monitor
+    monitor.refresh();
+    delay(10);
 }
