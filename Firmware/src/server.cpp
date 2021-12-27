@@ -20,12 +20,16 @@ namespace server
     {
         // Update WiFi status
         state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
-        if (state::wirelessConnected){
-            if (!serverRunning){
+        if (state::wirelessConnected)
+        {
+            if (!serverRunning)
+            {
                 server.begin();
                 serverRunning = true;
             }
-        } else {
+        }
+        else
+        {
             serverRunning = false;
         }
     }
@@ -38,7 +42,8 @@ namespace server
 
         client = server.available();
 
-        if (!client){
+        if (!client)
+        {
             client.stop();
             return;
         }
@@ -65,17 +70,42 @@ namespace server
                         client.println("Connection: close");
                         client.println();
 
-                        // turns the GPIO on and off
+                        /* Homebridge access URLs */
+
+                        if (header.indexOf("GET /homebridge/switch/status") >= 0)
+                        {
+                            state::newMessage("Check status (Home)");
+                            String response = state::switchOn ? "on" : "off";
+                            client.println(response);
+                            break;
+                        }
+                        else if (header.indexOf("GET /homebridge/switch/on") >= 0)
+                        {
+                            state::newMessage("Switch ON (Home)");
+                            state::switchOn = true;
+                            client.println("on");
+                            break;
+                        }
+                        else if (header.indexOf("GET /homebridge/switch/off") >= 0)
+                        {
+                            state::newMessage("Switch OFF (Home)");
+                            state::switchOn = false;
+                            client.println("off");
+                            break;
+                        }
+
+                        /* Web Client URLs*/
+
                         if (header.indexOf("GET /switch/on") >= 0)
                         {
                             // ON
-                            state::newMessage("Switch ON (HTTP)");
+                            state::newMessage("Switch ON (Web)");
                             state::switchOn = true;
                         }
                         else if (header.indexOf("GET /switch/off") >= 0)
                         {
                             // OFF
-                            state::newMessage("Switch OFF (HTTP)");
+                            state::newMessage("Switch OFF (Web)");
                             state::switchOn = false;
                         }
 
@@ -84,7 +114,6 @@ namespace server
                         client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
                         client.println("<link rel=\"icon\" href=\"data:,\">");
                         // CSS to style the on/off buttons
-                        // Feel free to change the background-color and font-size attributes to fit your preferences
                         client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
                         client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
                         client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
