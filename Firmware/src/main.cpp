@@ -8,16 +8,14 @@
 
 // IoControl controller
 IoControl ioControl;
-// OLED display controller
-Monitor monitor;
 
 // Arduino Initialize
 void setup()
 {
     // Initialize display
     // TODO: show boot screen
-    monitor.setup();
-    monitor.refresh();
+    monitor::setup();
+    monitor::refresh();
 
     // Setup GPIO interrupt
     ioControl.setup();
@@ -59,7 +57,7 @@ void loop()
     updateClock();
 
     // Refresh monitor
-    monitor.refresh();
+    monitor::refresh();
     // Refresh IO
     ioControl.refresh();
     delay(10);

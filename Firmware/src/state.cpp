@@ -41,7 +41,6 @@ namespace state
         {
             showMsg = false;
         }
-
         return "";
     }
 
