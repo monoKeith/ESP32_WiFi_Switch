@@ -202,8 +202,9 @@ namespace monitor
             display.setTextAlignment(TEXT_ALIGN_RIGHT);
             display.drawString(128, 0, state::displayTime);
             // Message
+            display.setFont(Roboto_Mono_Medium_18);
             display.setTextAlignment(TEXT_ALIGN_LEFT);
-            display.drawString(0, 15, msg);
+            display.drawStringMaxWidth(0, 18, 128, msg);
         }
 
         // Done

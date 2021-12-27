@@ -75,21 +75,21 @@ namespace server
 
                         if (header.indexOf("GET /homebridge/switch/status") >= 0)
                         {
-                            state::newMessage("Check status (Home)");
+                            state::newMessage("check stat HomeBridge");
                             String response = state::switchOn ? "1" : "0";
                             client.println(response);
                             break;
                         }
                         else if (header.indexOf("GET /homebridge/switch/on") >= 0)
                         {
-                            state::newMessage("Switch ON (Home)");
+                            state::newMessage("Switch ON HomeBridge");
                             state::switchOn = true;
                             client.println("on");
                             break;
                         }
                         else if (header.indexOf("GET /homebridge/switch/off") >= 0)
                         {
-                            state::newMessage("Switch OFF (Home)");
+                            state::newMessage("Switch OFF HomeBridge");
                             state::switchOn = false;
                             client.println("off");
                             break;
@@ -100,13 +100,13 @@ namespace server
                         if (header.indexOf("GET /switch/on") >= 0)
                         {
                             // ON
-                            state::newMessage("Switch ON (Web)");
+                            state::newMessage("Switch ON WebUI");
                             state::switchOn = true;
                         }
                         else if (header.indexOf("GET /switch/off") >= 0)
                         {
                             // OFF
-                            state::newMessage("Switch OFF (Web)");
+                            state::newMessage("Switch OFF WebUI");
                             state::switchOn = false;
                         }
 

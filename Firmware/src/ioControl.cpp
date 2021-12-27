@@ -21,13 +21,13 @@ void IoControl::setup()
 
 void IoControl::white()
 {
-    state::newMessage("Switch ON (Local)");
+    state::newMessage("Switch ON Local");
     state::switchOn = true;
 }
 
 void IoControl::gray()
 {
-    state::newMessage("Switch OFF (Local)");
+    state::newMessage("Switch OFF Local");
     state::switchOn = false;
 }
 
