@@ -1,12 +1,10 @@
 #include <Arduino.h>
-#include <WiFi.h>
 #include "time.h"
 #include "monitor.h"
 #include "ioControl.h"
 #include "config.h"
 #include "state.h"
-
-
+#include "server.h"
 
 // IoControl controller
 IoControl ioControl;
@@ -17,14 +15,15 @@ Monitor monitor;
 void setup()
 {
     // Initialize display
+    // TODO: show boot screen
     monitor.setup();
     monitor.refresh();
-    
+
     // Setup GPIO interrupt
     ioControl.setup();
 
-    // Start Wi-Fi
-    WiFi.begin(ssid, password);
+    // Setup HTTP server
+    server::setup();
 }
 
 // Update state var related to time
@@ -52,8 +51,9 @@ void updateClock()
 // Arduino run loop
 void loop()
 {
-    // Update WiFi status
-    state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
+    // Update server status
+    server::update();
+
     // Update clock
     updateClock();
 

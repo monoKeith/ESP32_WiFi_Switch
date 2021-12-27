@@ -21,13 +21,13 @@ void IoControl::setup()
 
 void IoControl::white()
 {
-    state::newMessage("Switch ON");
+    state::newMessage("Switch ON (Local)");
     state::switchOn = true;
 }
 
 void IoControl::gray()
 {
-    state::newMessage("Switch OFF");
+    state::newMessage("Switch OFF (Local)");
     state::switchOn = false;
 }
 
@@ -41,5 +41,4 @@ void IoControl::black()
 void IoControl::refresh(){
     // switch
     digitalWrite(SWITCH_PIN, state::switchOn ? HIGH : LOW);
-
 }
