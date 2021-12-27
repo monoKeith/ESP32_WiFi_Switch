@@ -70,12 +70,13 @@ namespace server
                         client.println("Connection: close");
                         client.println();
 
-                        /* Homebridge access URLs */
+                        /* Homebridge Plugin access URLs */
+                        // https://github.com/Supereg/homebridge-http-switch#readme
 
                         if (header.indexOf("GET /homebridge/switch/status") >= 0)
                         {
                             state::newMessage("Check status (Home)");
-                            String response = state::switchOn ? "on" : "off";
+                            String response = state::switchOn ? "1" : "0";
                             client.println(response);
                             break;
                         }
@@ -149,7 +150,7 @@ namespace server
                 }
             }
         }
-        // Close the connection
+        // Close connection
         client.stop();
     }
 }

@@ -168,6 +168,4 @@ void Monitor::refresh()
 
     // write the buffer to the display
     display.display();
-
-    delay(10);
 }
