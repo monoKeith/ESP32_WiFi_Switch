@@ -33,6 +33,7 @@
 
 int counter = 1;
 
+
 void Monitor::setup() {
   Serial.begin(115200);
   Serial.println();
@@ -131,25 +132,25 @@ void Monitor::refresh() {
   // clear the display
   display.clear();
 
-  // uptime
-  display.setFont(ArialMT_Plain_10);
-  display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.drawString(128, 54, String(millis()));
+  // Connection status
+  if (! state->wirelessConnected){
+    display.setFont(ArialMT_Plain_10);
+    display.setTextAlignment(TEXT_ALIGN_LEFT);
+    display.drawString(0, 0, "Connecting to WiFi...");
+  }
 
   // local time
   display.setFont(ArialMT_Plain_24);
-  display.setTextAlignment(TEXT_ALIGN_CENTER);
-  display.drawStringMaxWidth(64, 32-24, 128, displayTime);
+  display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+  display.drawStringMaxWidth(64, 32, 128, state->displayTime);
+
+  // Uptime
+  display.setFont(ArialMT_Plain_10);
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.drawString(128, 54, String(millis()));
 
   // write the buffer to the display
   display.display();
 
   delay(10);
-}
-
-
-void Monitor::setTime(tm *timeinfo){
-  char buffer[6];
-  snprintf(buffer, sizeof(buffer), "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
-  displayTime = String(buffer);
 }

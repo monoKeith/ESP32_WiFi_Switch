@@ -1,45 +1,56 @@
 #include <Arduino.h>
-// #include <WiFiNINA.h>
 #include <WiFi.h>
 #include "time.h"
 #include "monitor.h" 
 #include "config.h"
+#include "state.h"
 
+
+// State of everything
+State state;
 // OLED display controller
-Monitor monitor;
+Monitor monitor(&state);
 
 
 // Arduino Initialize
 void setup(){
-
-  monitor = Monitor();
+  // Initialize
   monitor.setup();
   monitor.refresh();
-
-  // Connect to Wi-Fi
+  // Start Wi-Fi
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-  
-  // Init and get the time
+}
+
+
+// Sync time from server
+void syncTime(){
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 }
 
 
+// Update time for monitor
 void updateLocalTime(){
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){
     return;
   }
-  monitor.setTime(&timeinfo);
+  state.setTime(&timeinfo);
 }
 
 
 // Arduino run loop
 void loop() {
+  // Check WiFi status
+  state.wirelessConnected = (WiFi.status() == WL_CONNECTED);
+  // Update time
+  if (state.wirelessConnected && !state.timeSynced){
+    syncTime();
+    state.timeSynced = true;
+  }
   updateLocalTime();
-  monitor.refresh();
   
+
+  // Refresh monitor
+  monitor.refresh();
   delay(10);
 }
