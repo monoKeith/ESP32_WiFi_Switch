@@ -13,6 +13,8 @@ static const char *password = "YOUR_PASSWD";
 #define GRAY_BUTTON_PIN 7
 #define BLACK_BUTTON_PIN 6
 
+#define SWITCH_PIN 33
+
 // Message display time (ms)
 // How long should a message (light on / off) stay on display?
 #define MSG_DISPLAY_MS 3000

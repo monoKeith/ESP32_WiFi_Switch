@@ -150,7 +150,7 @@ void Monitor::refresh()
     if (! msg.isEmpty()){
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        display.drawString(20, 0, msg);
+        display.drawString(0, 10, msg);
     }
 
     // local time

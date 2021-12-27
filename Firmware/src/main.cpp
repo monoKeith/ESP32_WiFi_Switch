@@ -2,14 +2,14 @@
 #include <WiFi.h>
 #include "time.h"
 #include "monitor.h"
-#include "buttons.h"
+#include "ioControl.h"
 #include "config.h"
 #include "state.h"
 
 
 
-// Buttons controller
-Buttons buttons;
+// IoControl controller
+IoControl ioControl;
 // OLED display controller
 Monitor monitor;
 
@@ -21,7 +21,7 @@ void setup()
     monitor.refresh();
     
     // Setup GPIO interrupt
-    buttons.setup();
+    ioControl.setup();
 
     // Start Wi-Fi
     WiFi.begin(ssid, password);
@@ -59,5 +59,7 @@ void loop()
 
     // Refresh monitor
     monitor.refresh();
+    // Refresh IO
+    ioControl.refresh();
     delay(10);
 }

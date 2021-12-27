@@ -18,6 +18,9 @@ namespace state{
     extern unsigned long messageEndTime;
     extern void newMessage(String msg);
     extern String getMessage();
+
+    // Output vars
+    extern bool switchOn;
 }
 
 

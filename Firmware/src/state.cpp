@@ -2,7 +2,8 @@
 
 namespace state
 {
-    // Clock related vars
+    /* Clock vars */
+
     String displayTime = "--:--";
     // Format time display as string
     void setTime(tm *timeinfo)
@@ -15,7 +16,8 @@ namespace state
     bool timeSyncRequired = true;
     bool wirelessConnected = false;
 
-    // Message related vars
+    /* Message vars */
+
     bool showMsg = false;
     String displayMsg = "";
     unsigned long messageEndTime = 0;
@@ -42,4 +44,8 @@ namespace state
 
         return "";
     }
+
+    /* Output vars */
+    bool switchOn = false;
+
 };

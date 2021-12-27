@@ -1,14 +1,17 @@
-#ifndef BUTTONS_H
-#define BUTTONS_H
+#ifndef IOCONTROL_H
+#define IOCONTROL_H
 
 #include <Arduino.h>
 #include "state.h"
 #include "config.h"
 
-class Buttons
+class IoControl
 {
 public:
+    // Must call to register interruptions
     void setup();
+    // Refresh output
+    void refresh();
 
 protected:
     static void white();
