@@ -157,11 +157,11 @@ namespace monitor
         display.setTextAlignment(TEXT_ALIGN_LEFT);
         display.drawString(0, 24, (state::wirelessConnected ? "Wi-Fi CONNECTED" : ("Wi-Fi... " + String(ssid))));
 
-        // Message
+        // Message or Last Sync time
         String msg = state::getMessage();
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        display.drawString(0, 34, (msg.isEmpty() ? "NO MESSAGE" : msg));
+        display.drawString(0, 34, (msg.isEmpty() ? ("Clock sync: " + state::lastSyncTime) : msg));
 
         // Msg end time
         display.setFont(ArialMT_Plain_10);

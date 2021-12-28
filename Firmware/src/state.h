@@ -6,11 +6,16 @@
 #include "config.h"
 
 namespace state{
+
+    // Clock synchronization
+    extern String lastSyncTime;
+
     // Clock related vars
+    extern bool clockInitialized;
     extern String displayTime;
     extern void setTime(tm *timeinfo);
     extern bool timeSyncRequired;
-    extern bool wirelessConnected ;
+    extern bool wirelessConnected;
 
     // Message related vars
     extern bool showMsg;

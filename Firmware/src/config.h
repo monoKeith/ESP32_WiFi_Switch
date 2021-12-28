@@ -17,16 +17,26 @@ static const char *password = "YOUR_PASSWD";
 #define SWITCH_PIN 33
 
 /* Message display time (ms) */
+
 // How long should a message (light on / off) stay on display?
 #define MSG_DISPLAY_MS 3000
 
 /* Time server */
-static const char *ntpServer = "pool.ntp.org";
-// Eastern time
-static const long gmtOffset_sec = 3600 * (-5);
-static const int daylightOffset_sec = 3600;
+
+#define NTP_SERVER "pool.ntp.org"
+
+// Eastern time (-5 * 3600)
+#define GMT_OFFSET_S -18000
+#define DAYLIGHT_OFFSET_S 3600
+
+// Update time periodically (30 mins)
+// #define TIME_SYNC_INTERVAL_MS 1800000L
+// 2 mins for test
+#define TIME_SYNC_INTERVAL_MS 120000L
+
 
 /* HTTP server */
+
 #define HTTP_TIMEOUT_MS 1000
 
 #endif

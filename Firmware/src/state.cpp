@@ -2,12 +2,23 @@
 
 namespace state
 {
+
+    /* Callback for clock update */
+
+    bool timeSyncRequired = true;
+
+    String lastSyncTime = "never synced";
+
     /* Display mode */
+
     DisplayMode displayMode = REGULAR;
 
     /* Clock vars */
 
+    bool clockInitialized = false;
+
     String displayTime = "--:--";
+
     // Format time display as string
     void setTime(tm *timeinfo)
     {
@@ -16,13 +27,15 @@ namespace state
         displayTime = String(buffer);
     }
 
-    bool timeSyncRequired = true;
+
     bool wirelessConnected = false;
 
     /* Message vars */
 
     bool showMsg = false;
+
     String displayMsg = "";
+
     unsigned long messageEndTime = 0;
 
     // Display a message on screen
@@ -48,6 +61,7 @@ namespace state
     }
 
     /* Output vars */
+
     bool switchOn = false;
 
 };
