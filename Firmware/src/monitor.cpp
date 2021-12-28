@@ -198,18 +198,18 @@ namespace monitor
             // Only display time, no message
             display.setFont(Roboto_Mono_Medium_35);
             display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
-            display.drawString(64, 32, state::displayTime);
+            display.drawString(64, 32 + SCREEN_Y_OFFSET, state::displayTime);
         }
         else
         {
             // Right corner: small time
             display.setFont(Roboto_Mono_Medium_15);
             display.setTextAlignment(TEXT_ALIGN_RIGHT);
-            display.drawString(128, 0, state::displayTime);
+            display.drawString(128, SCREEN_Y_OFFSET, state::displayTime);
             // Message
             display.setFont(Roboto_Mono_Medium_18);
             display.setTextAlignment(TEXT_ALIGN_LEFT);
-            display.drawStringMaxWidth(0, 18, 128, msg);
+            display.drawStringMaxWidth(0, 18 + SCREEN_Y_OFFSET, 128, msg);
         }
 
         // Done
