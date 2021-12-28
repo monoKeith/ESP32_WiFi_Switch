@@ -5,18 +5,16 @@
 #include "state.h"
 #include "config.h"
 
-class IoControl
+namespace ioControl
 {
-public:
     // Must call to register interruptions
-    void setup();
+    extern void setup();
     // Refresh output
-    void refresh();
+    extern void refresh();
 
-protected:
-    static void white();
-    static void gray();
-    static void black();
+    extern void white();
+    extern void gray();
+    extern void black();
 
 };
 
