@@ -7,7 +7,7 @@ namespace state
 
     bool timeSyncRequired = true;
 
-    String lastSyncTime = "never synced";
+    String lastSyncTime = "never";
 
     bool clockInitialized = false;
 

@@ -39,4 +39,8 @@ static const char *password = "YOUR_PASSWD";
 
 #define HTTP_TIMEOUT_MS 1000
 
+/* WiFi Hostname */
+
+#define HOSTNAME "Keith's ESP32-S2 Switch"
+
 #endif

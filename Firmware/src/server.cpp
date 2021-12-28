@@ -12,6 +12,7 @@ namespace server
     {
         // Start Wi-Fi
         // https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/
+        WiFi.setHostname(HOSTNAME);
         WiFi.mode(WIFI_STA);
         WiFi.begin(ssid, password);
         WiFi.setAutoReconnect(true);

@@ -166,7 +166,7 @@ namespace monitor
         String msg = state::getMessage();
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        display.drawString(0, 34, (msg.isEmpty() ? ("Clock sync: " + state::lastSyncTime) : msg));
+        display.drawString(0, 34, (msg.isEmpty() ? ("CLOCK SYNC: " + state::lastSyncTime) : msg));
 
         // Msg end time
         display.setFont(ArialMT_Plain_10);
