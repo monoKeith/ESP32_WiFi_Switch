@@ -155,7 +155,12 @@ namespace monitor
         // Connection status
         display.setFont(ArialMT_Plain_10);
         display.setTextAlignment(TEXT_ALIGN_LEFT);
-        display.drawString(0, 24, (state::wirelessConnected ? "Wi-Fi CONNECTED" : ("Wi-Fi... " + String(ssid))));
+        String connectionStatus;
+        if (state::wirelessConnected)
+            connectionStatus = state::localIP + " " + state::wirelessRSSI;
+        else
+            connectionStatus = "Wi-Fi... " + String(ssid);
+        display.drawString(0, 24, connectionStatus);
 
         // Message or Last Sync time
         String msg = state::getMessage();

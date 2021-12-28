@@ -38,7 +38,7 @@ void setup()
     server::setup();
 
     // Setup timer
-    ITimer0.attachInterruptInterval(TIME_SYNC_INTERVAL_MS * 1000, ClockSyncRequest);
+    ITimer0.attachInterruptInterval(TIME_SYNC_INTERVAL_MINUTES * 60000000, ClockSyncRequest);
 }
 
 void updateLocalTime()

@@ -30,9 +30,9 @@ static const char *password = "YOUR_PASSWD";
 #define DAYLIGHT_OFFSET_S 3600
 
 // Update time periodically (30 mins)
-// #define TIME_SYNC_INTERVAL_MS 1800000L
+#define TIME_SYNC_INTERVAL_MINUTES 30
 // 2 mins for test
-#define TIME_SYNC_INTERVAL_MS 120000L
+// #define TIME_SYNC_INTERVAL_MINUTES 2
 
 
 /* HTTP server */

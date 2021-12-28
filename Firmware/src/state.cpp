@@ -3,17 +3,11 @@
 namespace state
 {
 
-    /* Callback for clock update */
+    /* Clock synchronization */
 
     bool timeSyncRequired = true;
 
     String lastSyncTime = "never synced";
-
-    /* Display mode */
-
-    DisplayMode displayMode = REGULAR;
-
-    /* Clock vars */
 
     bool clockInitialized = false;
 
@@ -27,10 +21,15 @@ namespace state
         displayTime = String(buffer);
     }
 
+    /* Wi-Fi */
 
     bool wirelessConnected = false;
 
-    /* Message vars */
+    String localIP = "unknown";
+
+    String wirelessRSSI = "unknown";
+
+    /* Message display */
 
     bool showMsg = false;
 
@@ -60,7 +59,11 @@ namespace state
         return "";
     }
 
-    /* Output vars */
+    /* Display mode */
+
+    DisplayMode displayMode = REGULAR;
+
+    /* Switch */
 
     bool switchOn = false;
 

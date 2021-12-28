@@ -5,36 +5,44 @@
 #include "time.h"
 #include "config.h"
 
-namespace state{
+namespace state
+{
 
-    // Clock synchronization
+    /* Clock synchronization */
+
     extern String lastSyncTime;
 
-    // Clock related vars
     extern bool clockInitialized;
     extern String displayTime;
     extern void setTime(tm *timeinfo);
     extern bool timeSyncRequired;
-    extern bool wirelessConnected;
 
-    // Message related vars
+    /* Wi-Fi */
+
+    extern bool wirelessConnected;
+    extern String localIP;
+    extern String wirelessRSSI;
+
+    /* Message display */
+
     extern bool showMsg;
     extern String displayMsg;
     extern unsigned long messageEndTime;
     extern void newMessage(String msg);
     extern String getMessage();
 
-    // Output vars
-    extern bool switchOn;
-
-    // Display mode
-    enum DisplayMode {
+    enum DisplayMode
+    {
         REGULAR,
         DEBUG,
         OFF
     };
     extern DisplayMode displayMode;
-}
 
+    /* Switch */
+
+    extern bool switchOn;
+
+}
 
 #endif
