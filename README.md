@@ -86,6 +86,8 @@ REGULAR | REGULAR-MESSAGE| DEBUG
 
 * [ESP32TimerInterrupt](https://github.com/khoih-prog/ESP32TimerInterrupt)
 
+* [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer/)
+
 ### HomeBridge Plugin
 
 To make the switch accessable from [iOS Home](https://www.apple.com/ca/ios/home/), a separate [HomeBridge](https://homebridge.io/) server is required. I am running the HomeBridge server on a [RaspberryPi Zero W](https://www.raspberrypi.com/products/raspberry-pi-zero-w/).
