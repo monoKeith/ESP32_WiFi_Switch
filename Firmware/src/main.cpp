@@ -6,7 +6,7 @@
 #include "server.h"
 #include "clockControl.h"
 
-// stack size 64 KBytes?
+// stack sizes?
 const int STACK_SIZE_LARGE = 65536;
 const int STACK_SIZE_SMALL = 32768;
 const int STACK_SIZE_TINY = 16384;
@@ -19,8 +19,8 @@ void connectionWatch(void *pvParameters)
     {
         if (state::wirelessConnected)
         {
-            // Check again in 10s
-            delay(10000);
+            // Check again in 5s
+            delay(5000);
             continue;
         }
 
@@ -46,9 +46,9 @@ void monitorThread(void *pvParameters)
 
     while (true)
     {
-        // Delay for 50ms, ~15 fps
+        // Delay for 50ms, ~14 fps
         delay(50);
-        // Refresh monitor
+        // Refresh monitor, takes about 20ms?
         monitor::refresh();
     }
 }
@@ -86,7 +86,7 @@ void setup()
                             "ConnectionThread",
                             STACK_SIZE_TINY,
                             NULL,
-                            configMAX_PRIORITIES - 1,
+                            5,
                             NULL,
                             CONFIG_ARDUINO_RUN_CORE0);
 
