@@ -11,6 +11,33 @@ const int STACK_SIZE_LARGE = 65536;
 const int STACK_SIZE_SMALL = 32768;
 const int STACK_SIZE_TINY = 16384;
 
+void connectionWatch(void *pvParameters)
+{
+    // Start Wi-Fi
+    // https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/
+    while (true)
+    {
+        if (state::wirelessConnected)
+        {
+            // Check again in 10s
+            delay(10000);
+            continue;
+        }
+
+        // Setup connection
+        WiFi.disconnect();
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(ssid, password);
+
+        unsigned long startAttemptTime = millis();
+
+        while (!state::wirelessConnected && (millis() - startAttemptTime < WIFI_TIMEOUT_MS))
+        {
+            delay(500);
+        }
+    }
+}
+
 void monitorThread(void *pvParameters)
 {
     // Initialize display
@@ -69,25 +96,33 @@ void ioThread(void *pvParameters)
 // Arduino Initialize
 void setup()
 {
+    xTaskCreatePinnedToCore(connectionWatch,
+                            "ConnectionThread",
+                            STACK_SIZE_TINY,
+                            NULL,
+                            configMAX_PRIORITIES - 1,
+                            NULL,
+                            CONFIG_ARDUINO_RUN_CORE0);
+
     xTaskCreate(serverThread,
                 "ServerThread",
                 STACK_SIZE_LARGE,
                 NULL,
-                configMAX_PRIORITIES - 1,
+                5,
                 NULL);
 
     xTaskCreate(monitorThread,
                 "MonitorThread",
                 STACK_SIZE_SMALL,
                 NULL,
-                3,
+                2,
                 NULL);
 
     xTaskCreate(clockThread,
                 "ClockThread",
                 STACK_SIZE_SMALL,
                 NULL,
-                2,
+                4,
                 NULL);
 
     // Setup GPIO interrupt
