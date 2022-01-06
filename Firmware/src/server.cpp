@@ -31,7 +31,7 @@ namespace server
         "<p><a href=\"/switch/on\"><button class=\"button\">ON</button></a></p>"
         "</body></html>";
 
-    // Handlers
+    /* Handlers */
 
     void handleHomeBridge(AsyncWebServerRequest *request)
     {
@@ -79,7 +79,8 @@ namespace server
         request->redirect("/switch/status");
     }
 
-    // Setup async web server
+    /* Async web server setup */
+    
     AsyncWebServer server(80);
 
     void setup()

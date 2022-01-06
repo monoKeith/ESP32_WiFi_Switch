@@ -6,14 +6,12 @@
 #include "server.h"
 #include "clockControl.h"
 
-// stack sizes?
-const int STACK_SIZE_LARGE = 65536;
-const int STACK_SIZE_SMALL = 32768;
-const int STACK_SIZE_TINY = 16384;
+// Stack sizes
+#define STACK_SIZE_SMALL 32768
+#define STACK_SIZE_TINY 16384
 
 void connectionWatch(void *pvParameters)
 {
-    // Start Wi-Fi
     // https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/
     while (true)
     {
