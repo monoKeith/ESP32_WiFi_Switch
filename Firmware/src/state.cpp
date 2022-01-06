@@ -61,7 +61,7 @@ namespace state
 
     /* Display mode */
 
-    DisplayMode displayMode = DEBUG;
+    DisplayMode displayMode = REGULAR;
 
     /* Switch */
 

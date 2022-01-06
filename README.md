@@ -33,7 +33,7 @@ Connected devices includes:
 
 ## Firmware
 
-Firmware was implemented in C++ using PlatformIO arduino framework. PlatformIO was initialized with [adafruit MagTag](https://www.adafruit.com/product/4800) configuration (which uses the same module), because ESP32-S2 Dev Board does not offer support for arduino framework.
+Firmware was implemented in C++ using PlatformIO arduino framework. Each part of the firmware is run a task of FreeRTOS. PlatformIO was initialized with [adafruit MagTag](https://www.adafruit.com/product/4800) configuration (which uses the same module), because ESP32-S2 Dev Board does not offer support for arduino framework.
 
 Configure properties of firmware in `Firmware/src/config.h` according to how hardwares are connectred, and Wi-Fi credential. (ESP32-S2 allows any 2 GPIO pins to run I2C, connecting I2C display to any 2 GPIO pins should work)
 
