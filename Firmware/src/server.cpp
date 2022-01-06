@@ -3,154 +3,92 @@
 namespace server
 {
 
-    WiFiServer server;
-    WiFiClient client;
+    // WebUI according to current state
 
-    bool serverRunning = false;
+    const String webUI_ON =
+        "<!DOCTYPE html><html>"
+        "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        "<link rel=\"icon\" href=\"data:,\">"
+        "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}"
+        ".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;"
+        "text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}"
+        ".button2 {background-color: #555555;}</style></head>"
+        "<body><h1>ESP32 WiFi Switch</h1>"
+        "<p><a href=\"/switch/off\"><button class=\"button button2\">OFF</button></a></p>"
+
+        "</body></html>";
+
+    const String webUI_OFF =
+        "<!DOCTYPE html><html>"
+        "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        "<link rel=\"icon\" href=\"data:,\">"
+        "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}"
+        ".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;"
+        "text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}"
+        ".button2 {background-color: #555555;}</style></head>"
+        "<body><h1>ESP32 WiFi Switch</h1>"
+        "<p><a href=\"/switch/on\"><button class=\"button\">ON</button></a></p>"
+        "</body></html>";
+
+    // Handle redirects
+
+    void notFound(AsyncWebServerRequest *request)
+    {
+        request->redirect("/switch/status");
+    }
+
+    // Setup async web server
+    AsyncWebServer server(80);
 
     void setup()
     {
-        // Init a server
-        server = WiFiServer(80);
-    }
+        // https://github.com/me-no-dev/ESPAsyncWebServer/blob/master/examples/simple_server/simple_server.ino
 
-    void update()
-    {
-        if (state::wirelessConnected)
-        {
-            // Start server once connected
-            if (!serverRunning)
-            {
-                server.begin();
-                serverRunning = true;
-            }
-            // Update local IP and RSSI
-            state::localIP = WiFi.localIP().toString();
-            state::wirelessRSSI = String(WiFi.RSSI()) + "dBm";
-        }
-        else
-        {
-            serverRunning = false;
-        }
-    }
+        /* HomeBridge */
 
-    void processRequests()
-    {
-        // https://randomnerdtutorials.com/esp32-web-server-arduino-ide/
-        if (!state::wirelessConnected)
-            return;
+        server.on("/homebridge/switch/status", HTTP_GET, [](AsyncWebServerRequest *request)
+                  {
+                      state::newMessage("check stat HomeBridge");
+                      request->send(200, "text/plain", state::switchOn ? "1" : "0");
+                  });
 
-        client = server.available();
+        server.on("/homebridge/switch/on", HTTP_GET, [](AsyncWebServerRequest *request)
+                  {
+                      state::newMessage("Switch ON HomeBridge");
+                      state::switchOn = true;
+                      request->send(200, "text/plain", "on");
+                  });
 
-        if (!client)
-        {
-            client.stop();
-            return;
-        }
+        server.on("/homebridge/switch/off", HTTP_GET, [](AsyncWebServerRequest *request)
+                  {
+                      state::newMessage("Switch OFF HomeBridge");
+                      state::switchOn = false;
+                      request->send(200, "text/plain", "off");
+                  });
 
-        unsigned long timeoutMark = millis() + HTTP_TIMEOUT_MS;
+        /* WebUI */
 
-        String header = "";
-        String currentLine = "";
+        server.on("^\/switch\/(on|off|status)$", HTTP_GET, [](AsyncWebServerRequest *request)
+                  {
+                      String action = request->pathArg(0);
 
-        while (client.connected() && (millis() < timeoutMark))
-        {
-            if (client.available())
-            {
-                char c = client.read();
-                header += c;
-                if (c == '\n')
-                {
-                    if (currentLine.length() == 0)
-                    {
-                        // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-                        // and a content-type so the client knows what's coming, then a blank line:
-                        client.println("HTTP/1.1 200 OK");
-                        client.println("Content-type:text/html");
-                        client.println("Connection: close");
-                        client.println();
+                      if (action.equals("on"))
+                      {
+                          state::newMessage("Switch ON WebUI");
+                          state::switchOn = true;
+                      }
+                      else if (action.equals("off"))
+                      {
+                          state::newMessage("Switch OFF WebUI");
+                          state::switchOn = false;
+                      }
 
-                        /* Homebridge Plugin access URLs */
-                        // https://github.com/Supereg/homebridge-http-switch#readme
+                      request->send(200, "text/html", state::switchOn ? webUI_ON : webUI_OFF);
+                  });
 
-                        if (header.indexOf("GET /homebridge/switch/status") >= 0)
-                        {
-                            state::newMessage("check stat HomeBridge");
-                            String response = state::switchOn ? "1" : "0";
-                            client.println(response);
-                            break;
-                        }
-                        else if (header.indexOf("GET /homebridge/switch/on") >= 0)
-                        {
-                            state::newMessage("Switch ON HomeBridge");
-                            state::switchOn = true;
-                            client.println("on");
-                            break;
-                        }
-                        else if (header.indexOf("GET /homebridge/switch/off") >= 0)
-                        {
-                            state::newMessage("Switch OFF HomeBridge");
-                            state::switchOn = false;
-                            client.println("off");
-                            break;
-                        }
+        /* Start */
 
-                        /* Web Client URLs*/
-
-                        if (header.indexOf("GET /switch/on") >= 0)
-                        {
-                            // ON
-                            state::newMessage("Switch ON WebUI");
-                            state::switchOn = true;
-                        }
-                        else if (header.indexOf("GET /switch/off") >= 0)
-                        {
-                            // OFF
-                            state::newMessage("Switch OFF WebUI");
-                            state::switchOn = false;
-                        }
-
-                        // Display the HTML web page
-                        client.println("<!DOCTYPE html><html>");
-                        client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-                        client.println("<link rel=\"icon\" href=\"data:,\">");
-                        // CSS to style the on/off buttons
-                        client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-                        client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
-                        client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-                        client.println(".button2 {background-color: #555555;}</style></head>");
-
-                        // Web Page Heading
-                        client.println("<body><h1>ESP32 WiFi Switch</h1>");
-
-                        String currentState = (state::switchOn ? "ON" : "OFF");
-                        client.println("<p>Switch - Current state: " + currentState + "</p>");
-
-                        if (!state::switchOn)
-                        {
-                            client.println("<p><a href=\"/switch/on\"><button class=\"button\">ON</button></a></p>");
-                        }
-                        else
-                        {
-                            client.println("<p><a href=\"/switch/off\"><button class=\"button button2\">OFF</button></a></p>");
-                        }
-
-                        client.println("</body></html>");
-                        client.println();
-                        break;
-                    }
-                    else
-                    {
-                        currentLine = "";
-                    }
-                }
-                else if (c != '\r')
-                {
-                    currentLine += c;
-                }
-            }
-        }
-        // Close connection
-        client.stop();
+        server.onNotFound(notFound);
+        server.begin();
     }
 }

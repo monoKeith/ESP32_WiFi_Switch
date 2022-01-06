@@ -53,21 +53,6 @@ void monitorThread(void *pvParameters)
     }
 }
 
-void serverThread(void *pvParameters)
-{
-    // Setup HTTP server
-    server::setup();
-
-    while (true)
-    {
-        // Delay for 10ms
-        delay(10);
-        // Update server status
-        server::update();
-        server::processRequests();
-    }
-}
-
 void ioThread(void *pvParameters)
 {
     while (true)
@@ -82,6 +67,7 @@ void ioThread(void *pvParameters)
 // Arduino Initialize
 void setup()
 {
+    // Setup WiFi connection watchdog
     xTaskCreatePinnedToCore(connectionWatch,
                             "ConnectionThread",
                             STACK_SIZE_TINY,
@@ -90,13 +76,7 @@ void setup()
                             NULL,
                             CONFIG_ARDUINO_RUN_CORE0);
 
-    xTaskCreate(serverThread,
-                "ServerThread",
-                STACK_SIZE_LARGE,
-                NULL,
-                5,
-                NULL);
-
+    // Setup display
     xTaskCreate(monitorThread,
                 "MonitorThread",
                 STACK_SIZE_SMALL,
@@ -107,7 +87,10 @@ void setup()
     // Setup clock
     clockControl::setup();
 
-    // Setup GPIO interrupt
+    // Setup web server
+    server::setup();
+
+    // Setup GPIO interrupt (for buttons)
     ioControl::setup();
     xTaskCreate(ioThread,
                 "IoThread",
@@ -122,8 +105,16 @@ void loop()
 {
     // Update WiFi status
     state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
+    if (state::wirelessConnected)
+    {
+        // Update local IP and RSSI
+        state::localIP = WiFi.localIP().toString();
+        state::wirelessRSSI = String(WiFi.RSSI()) + "dBm";
+    }
+
     // Update clock, clock control cannot run as a Task?
     clockControl::update();
+
     // Done
     delay(500);
 }
