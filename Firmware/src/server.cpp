@@ -4,6 +4,7 @@ namespace server
 {
 
     // WebUI according to current state
+    // https://randomnerdtutorials.com/esp32-web-server-arduino-ide/
 
     const String webUI_ON =
         "<!DOCTYPE html><html>"
@@ -30,7 +31,48 @@ namespace server
         "<p><a href=\"/switch/on\"><button class=\"button\">ON</button></a></p>"
         "</body></html>";
 
-    // Handle redirects
+    // Handlers
+
+    void handleHomeBridge(AsyncWebServerRequest *request)
+    {
+        String action = request->pathArg(0);
+
+        if (action.equals("on"))
+        {
+            state::newMessage("Switch ON HomeBridge");
+            state::switchOn = true;
+            request->send(200, "text/plain", "on");
+        }
+        else if (action.equals("off"))
+        {
+            state::newMessage("Switch OFF HomeBridge");
+            state::switchOn = false;
+            request->send(200, "text/plain", "off");
+        }
+        else
+        {
+            state::newMessage("Check stat HomeBridge");
+            request->send(200, "text/plain", state::switchOn ? "1" : "0");
+        }
+    }
+
+    void handleWebUI(AsyncWebServerRequest *request)
+    {
+        String action = request->pathArg(0);
+
+        if (action.equals("on"))
+        {
+            state::newMessage("Switch ON WebUI");
+            state::switchOn = true;
+        }
+        else if (action.equals("off"))
+        {
+            state::newMessage("Switch OFF WebUI");
+            state::switchOn = false;
+        }
+
+        request->send(200, "text/html", state::switchOn ? webUI_ON : webUI_OFF);
+    }
 
     void notFound(AsyncWebServerRequest *request)
     {
@@ -46,45 +88,11 @@ namespace server
 
         /* HomeBridge */
 
-        server.on("/homebridge/switch/status", HTTP_GET, [](AsyncWebServerRequest *request)
-                  {
-                      state::newMessage("check stat HomeBridge");
-                      request->send(200, "text/plain", state::switchOn ? "1" : "0");
-                  });
-
-        server.on("/homebridge/switch/on", HTTP_GET, [](AsyncWebServerRequest *request)
-                  {
-                      state::newMessage("Switch ON HomeBridge");
-                      state::switchOn = true;
-                      request->send(200, "text/plain", "on");
-                  });
-
-        server.on("/homebridge/switch/off", HTTP_GET, [](AsyncWebServerRequest *request)
-                  {
-                      state::newMessage("Switch OFF HomeBridge");
-                      state::switchOn = false;
-                      request->send(200, "text/plain", "off");
-                  });
+        server.on("^/homebridge/switch/(on|off|status)$", HTTP_GET, handleHomeBridge);
 
         /* WebUI */
 
-        server.on("^\/switch\/(on|off|status)$", HTTP_GET, [](AsyncWebServerRequest *request)
-                  {
-                      String action = request->pathArg(0);
-
-                      if (action.equals("on"))
-                      {
-                          state::newMessage("Switch ON WebUI");
-                          state::switchOn = true;
-                      }
-                      else if (action.equals("off"))
-                      {
-                          state::newMessage("Switch OFF WebUI");
-                          state::switchOn = false;
-                      }
-
-                      request->send(200, "text/html", state::switchOn ? webUI_ON : webUI_OFF);
-                  });
+        server.on("^/switch/(on|off|status)$", HTTP_GET, handleWebUI);
 
         /* Start */
 
