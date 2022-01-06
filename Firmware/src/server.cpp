@@ -16,8 +16,6 @@ namespace server
 
     void update()
     {
-        // Update WiFi status
-        state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
         if (state::wirelessConnected)
         {
             // Start server once connected

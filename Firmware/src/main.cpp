@@ -68,20 +68,6 @@ void serverThread(void *pvParameters)
     }
 }
 
-void clockThread(void *pvParameters)
-{
-    // Setup clock
-    clockControl::setup();
-
-    while (true)
-    {
-        // Delay for 500ms
-        delay(500);
-        // Update clock
-        clockControl::update();
-    }
-}
-
 void ioThread(void *pvParameters)
 {
     while (true)
@@ -118,12 +104,8 @@ void setup()
                 2,
                 NULL);
 
-    xTaskCreate(clockThread,
-                "ClockThread",
-                STACK_SIZE_SMALL,
-                NULL,
-                4,
-                NULL);
+    // Setup clock
+    clockControl::setup();
 
     // Setup GPIO interrupt
     ioControl::setup();
@@ -138,6 +120,10 @@ void setup()
 // Arduino run loop
 void loop()
 {
-    // Do nothing
-    delay(1000);
+    // Update WiFi status
+    state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
+    // Update clock, clock control cannot run as a Task?
+    clockControl::update();
+    // Done
+    delay(500);
 }

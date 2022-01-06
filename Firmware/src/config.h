@@ -4,6 +4,7 @@
 /* WiFi credentials */
 static const char *ssid = "YOUR_SSID";
 static const char *password = "YOUR_PASSWD";
+#define WIFI_TIMEOUT_MS 30000
 
 /* GPIO Pins */
 
