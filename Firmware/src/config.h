@@ -7,12 +7,12 @@ static const char *password = "YOUR_PASSWD";
 
 /* GPIO Pins */
 
-#define SDA_PIN 43
-#define SCL_PIN 44
+#define SDA_PIN 4
+#define SCL_PIN 5
 
-#define WHITE_BUTTON_PIN 37
-#define GRAY_BUTTON_PIN 36
-#define BLACK_BUTTON_PIN 35
+#define WHITE_BUTTON_PIN 6
+#define GRAY_BUTTON_PIN 7
+#define BLACK_BUTTON_PIN 8
 
 #define SWITCH_PIN 33
 
