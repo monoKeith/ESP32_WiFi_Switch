@@ -19,11 +19,10 @@ void monitorThread(void *pvParameters)
 
     while (true)
     {
+        // Delay for 50ms, ~15 fps
+        delay(50);
         // Refresh monitor
         monitor::refresh();
-
-        // Delay for 20ms
-        vTaskDelay(20 / portTICK_PERIOD_MS);
     }
 }
 
@@ -34,12 +33,11 @@ void serverThread(void *pvParameters)
 
     while (true)
     {
+        // Delay for 10ms
+        delay(10);
         // Update server status
         server::update();
         server::processRequests();
-
-        // Delay for 10ms
-        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
@@ -50,57 +48,55 @@ void clockThread(void *pvParameters)
 
     while (true)
     {
+        // Delay for 500ms
+        delay(500);
         // Update clock
         clockControl::update();
-        // Delay for 500ms
-        vTaskDelay(500 / portTICK_PERIOD_MS);
     }
 }
 
 void ioThread(void *pvParameters)
 {
-    // Setup GPIO interrupt
-    ioControl::setup();
-
     while (true)
     {
+        // Delay for 100ms
+        delay(100);
         // Refresh IO
         ioControl::refresh();
-
-        // Delay for 100ms
-        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
 // Arduino Initialize
 void setup()
 {
+    xTaskCreate(serverThread,
+                "ServerThread",
+                STACK_SIZE_LARGE,
+                NULL,
+                configMAX_PRIORITIES - 1,
+                NULL);
+
     xTaskCreate(monitorThread,
                 "MonitorThread",
-                STACK_SIZE_LARGE,
+                STACK_SIZE_SMALL,
                 NULL,
                 3,
                 NULL);
 
+    xTaskCreate(clockThread,
+                "ClockThread",
+                STACK_SIZE_SMALL,
+                NULL,
+                2,
+                NULL);
+
+    // Setup GPIO interrupt
+    ioControl::setup();
     xTaskCreate(ioThread,
                 "IoThread",
                 STACK_SIZE_TINY,
                 NULL,
                 1,
-                NULL);
-
-    xTaskCreate(serverThread,
-                "ServerThread",
-                STACK_SIZE_SMALL,
-                NULL,
-                4,
-                NULL);
-
-    xTaskCreate(clockThread,
-                "ClockThread",
-                STACK_SIZE_TINY,
-                NULL,
-                2,
                 NULL);
 }
 
