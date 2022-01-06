@@ -6,40 +6,124 @@
 #include "server.h"
 #include "clockControl.h"
 
-// Arduino Initialize
-void setup()
+// stack sizes?
+const int STACK_SIZE_LARGE = 65536;
+const int STACK_SIZE_SMALL = 32768;
+const int STACK_SIZE_TINY = 16384;
+
+void connectionWatch(void *pvParameters)
+{
+    // Start Wi-Fi
+    // https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/
+    while (true)
+    {
+        if (state::wirelessConnected)
+        {
+            // Check again in 5s
+            delay(5000);
+            continue;
+        }
+
+        // Setup connection
+        WiFi.disconnect();
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(ssid, password);
+
+        unsigned long startAttemptTime = millis();
+
+        while (!state::wirelessConnected && (millis() - startAttemptTime < WIFI_TIMEOUT_MS))
+        {
+            delay(500);
+        }
+    }
+}
+
+void monitorThread(void *pvParameters)
 {
     // Initialize display
     // TODO: show boot screen
     monitor::setup();
-    monitor::refresh();
 
-    // Setup GPIO interrupt
-    ioControl::setup();
+    while (true)
+    {
+        // Delay for 50ms, ~14 fps
+        delay(50);
+        // Refresh monitor, takes about 20ms?
+        monitor::refresh();
+    }
+}
 
+void serverThread(void *pvParameters)
+{
     // Setup HTTP server
     server::setup();
 
+    while (true)
+    {
+        // Delay for 10ms
+        delay(10);
+        // Update server status
+        server::update();
+        server::processRequests();
+    }
+}
+
+void ioThread(void *pvParameters)
+{
+    while (true)
+    {
+        // Delay for 100ms
+        delay(100);
+        // Refresh IO
+        ioControl::refresh();
+    }
+}
+
+// Arduino Initialize
+void setup()
+{
+    xTaskCreatePinnedToCore(connectionWatch,
+                            "ConnectionThread",
+                            STACK_SIZE_TINY,
+                            NULL,
+                            5,
+                            NULL,
+                            CONFIG_ARDUINO_RUN_CORE0);
+
+    xTaskCreate(serverThread,
+                "ServerThread",
+                STACK_SIZE_LARGE,
+                NULL,
+                5,
+                NULL);
+
+    xTaskCreate(monitorThread,
+                "MonitorThread",
+                STACK_SIZE_SMALL,
+                NULL,
+                2,
+                NULL);
+
     // Setup clock
     clockControl::setup();
+
+    // Setup GPIO interrupt
+    ioControl::setup();
+    xTaskCreate(ioThread,
+                "IoThread",
+                STACK_SIZE_TINY,
+                NULL,
+                1,
+                NULL);
 }
 
 // Arduino run loop
 void loop()
 {
-    // Update server status
-    server::update();
-    server::processRequests();
-
-    // Update clock
+    // Update WiFi status
+    state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
+    // Update clock, clock control cannot run as a Task?
     clockControl::update();
-
-    // Refresh monitor
-    monitor::refresh();
-
-    // Refresh IO
-    ioControl::refresh();
-
     // Done
-    delay(10);
+    delay(500);
 }

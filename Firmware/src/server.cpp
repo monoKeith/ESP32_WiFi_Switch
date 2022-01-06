@@ -10,21 +10,12 @@ namespace server
 
     void setup()
     {
-        // Start Wi-Fi
-        // https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino/
-        WiFi.setHostname(HOSTNAME);
-        WiFi.mode(WIFI_STA);
-        WiFi.begin(ssid, password);
-        WiFi.setAutoReconnect(true);
-        WiFi.persistent(true);
         // Init a server
         server = WiFiServer(80);
     }
 
     void update()
     {
-        // Update WiFi status
-        state::wirelessConnected = (WiFi.status() == WL_CONNECTED);
         if (state::wirelessConnected)
         {
             // Start server once connected
